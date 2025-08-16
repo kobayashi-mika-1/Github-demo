@@ -11,25 +11,13 @@ import raisetech.StudentManagement.data.Students_Courses;
 import raisetech.StudentManagement.repository.StudentRepository;
 
 @SpringBootApplication
-@RestController
+
 public class StudentManagementApplication {
-
-	@Autowired
-	private StudentRepository repository;
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(StudentManagementApplication.class, args);
 	}
 
-	@GetMapping("/studentList")
-	public List<Student> getStudentList() {
-		return repository.searchStudent();
-	}
 
-	@GetMapping("/studentCourseList")
-	public List<Students_Courses> getStuden_CoursestList() {
-		return repository.searchStudents_Courses();
-	}
 
 }
