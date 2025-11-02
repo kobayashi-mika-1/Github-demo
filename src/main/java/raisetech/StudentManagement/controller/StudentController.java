@@ -1,33 +1,34 @@
-package raisetech.StudentManagement.controllar;
+package raisetech.StudentManagement.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.Students_Courses;
-import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
-@RestController
-public class StudentControllar {
+@Controller
+public class StudentController {
 
   private StudentService service;
   private StudentConverter converter;
 
   @Autowired
-  public StudentControllar(StudentService service , StudentConverter converter) {
+  public StudentController(StudentService service , StudentConverter converter) {
     this.service = service;
     this.converter = converter;
   }
 
   @GetMapping("/studentList")
-  public List<StudentDetail> getsearchStudentList() {
+  public String studentList (Model model) {
     List<Student> students = service.searchStudentList();
     List<Students_Courses> studentsCourses = service.searchStudents_CoursesList();
 
-    return converter.convertStudentDetails(students, studentsCourses);
+    model.addAttribute( "studentList" , converter.convertStudentDetails(students, studentsCourses));
+    return "studentList";
   }
 
 
