@@ -1,13 +1,18 @@
 package raisetech.StudentManagement.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.StudentManagement.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
-import raisetech.StudentManagement.data.Students_Courses;
+import raisetech.StudentManagement.data.students_Courses;
+import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
 @Controller
@@ -25,7 +30,7 @@ public class StudentController {
   @GetMapping("/studentList")
   public String studentList (Model model) {
     List<Student> students = service.searchStudentList();
-    List<Students_Courses> studentsCourses = service.searchStudents_CoursesList();
+    List<students_Courses> studentsCourses = service.searchStudents_CoursesList();
 
     model.addAttribute( "studentList" , converter.convertStudentDetails(students, studentsCourses));
     return "studentList";
@@ -34,7 +39,27 @@ public class StudentController {
 
 
   @GetMapping("/studentCourseList")
-  public List<Students_Courses> getStudents_CoursestList() {
+  public List<students_Courses> getStudents_CoursestList() {
     return service.searchStudents_CoursesList();
+  }
+
+  @GetMapping("/newStudent")
+  public String newStudent (Model model) {
+    StudentDetail studentDetail = new StudentDetail();
+    studentDetail.setStudentsCourses(Arrays.asList(new students_Courses()));
+    model.addAttribute("studentDetail" , studentDetail);
+    return "registerStudent";
+  }
+
+  @PostMapping("/registerStudent")
+  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+   if (result.hasErrors()) {
+     return "registerStudent";
+   }
+    //新規受講生情報登録
+    service.registerStudent(studentDetail);
+
+    //コース情報登録
+    return "redirect:/studentList";
   }
 }
